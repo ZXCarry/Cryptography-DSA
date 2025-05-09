@@ -1,4 +1,3 @@
-// DSA.java
 package org.example;
 
 import java.math.BigInteger;
@@ -23,30 +22,25 @@ public class DSA {
     }
 
     public void generateKeys() {
-        q = BigInteger.probablePrime(160, random);
-
-        // Znalezienie p = k*q + 1 takiego, że p jest pierwsza
-        BigInteger k;
-//        do {
-//            k = new BigInteger(512, random);
-//            p = q.multiply(k).add(BigInteger.ONE);
-//        } while (!p.isProbablePrime(40));
-
-        int L = 512 + 64 * random.nextInt(9); // losuj 512–1024
+        BigInteger q;
         do {
-            k = new BigInteger(L - q.bitLength(), random); // steruj długością k
+            q = BigInteger.probablePrime(160, random);
+        } while (q.bitLength() != 160);
+
+        int targetBitLength = 1024;
+        BigInteger k;
+        do {
+            int kBits = targetBitLength - q.bitLength();
+            k = new BigInteger(kBits, random);
             p = q.multiply(k).add(BigInteger.ONE);
-        } while (!p.isProbablePrime(40) || p.bitLength() != L);
+        } while (!p.isProbablePrime(40) || p.bitLength() != targetBitLength);
 
-
-        // Znalezienie generatora g
         BigInteger h;
         do {
             h = new BigInteger(p.bitLength() - 1, random);
             g = h.modPow(p.subtract(BigInteger.ONE).divide(q), p);
         } while (g.compareTo(BigInteger.ONE) <= 0);
 
-        // Klucze: x (prywatny), y = g^x mod p (publiczny)
         x = new BigInteger(q.bitLength() - 1, random);
         y = g.modPow(x, p);
     }
