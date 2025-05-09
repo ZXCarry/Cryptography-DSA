@@ -9,7 +9,6 @@ public class DSA {
     private final SecureRandom random = new SecureRandom();
     private final MessageDigest digest;
 
-    // Parametry i klucze DSA
     public BigInteger p, q, g, x, y;
 
     public DSA() {
@@ -22,10 +21,10 @@ public class DSA {
     }
 
     public void generateKeys() {
-        BigInteger q;
+
         do {
-            q = BigInteger.probablePrime(160, random);
-        } while (q.bitLength() != 160);
+            this.q = BigInteger.probablePrime(160, random);
+        } while (this.q.bitLength() != 160);
 
         int targetBitLength = 1024;
         BigInteger k;
